@@ -35,15 +35,15 @@ namespace AlephNote.Plugins.GoogleDrive {
         }
 
         public override IRemoteStorageConnection CreateRemoteStorageConnection(IWebProxy proxy, IRemoteStorageConfiguration config, HierachyEmulationConfig hierachicalConfig) {
-            throw new NotImplementedException();
+            return new GoogleDriveConnection();
         }
 
         public override INote CreateEmptyNote(IRemoteStorageConnection conn, IRemoteStorageConfiguration cfg) {
-            throw new NotImplementedException();
+            return new GoogleDriveNote();
         }
 
         public override IRemoteStorageSyncPersistance CreateEmptyRemoteSyncData() {
-            throw new NotImplementedException();
+            return new GoogleDriveData();
         }
     }
 }

@@ -41,7 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GoogleDriveAPI.cs" />
     <Compile Include="GoogleDriveConfig.cs" />
+    <Compile Include="GoogleDriveConnection.cs" />
+    <Compile Include="GoogleDriveData.cs" />
+    <Compile Include="GoogleDriveNote.cs" />
     <Compile Include="GoogleDrivePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
