@@ -4,11 +4,14 @@ using AlephNote.PluginInterface;
 namespace AlephNote.Plugins.GoogleDrive {
     public class GoogleDriveData : IRemoteStorageSyncPersistance {
         public XElement Serialize() {
-            throw new System.NotImplementedException();
+            var r = new XElement("data");
+            r.SetAttributeValue("plugin", GoogleDrivePlugin.Name);
+            r.SetAttributeValue("pluginversion", GoogleDrivePlugin.Version.ToString());
+            return r;
         }
 
         public void Deserialize(XElement input) {
-            throw new System.NotImplementedException();
+            
         }
     }
 }
