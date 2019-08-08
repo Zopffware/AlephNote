@@ -27,11 +27,11 @@ namespace AlephNote.Plugins.GoogleDrive {
         }
 
         public override void Init(AlephLogger logger) {
-            throw new NotImplementedException();
+            //
         }
 
         public override IRemoteStorageConfiguration CreateEmptyRemoteStorageConfiguration() {
-            throw new NotImplementedException();
+            return new GoogleDriveConfig();
         }
 
         public override IRemoteStorageConnection CreateRemoteStorageConnection(IWebProxy proxy, IRemoteStorageConfiguration config, HierachyEmulationConfig hierachicalConfig) {
