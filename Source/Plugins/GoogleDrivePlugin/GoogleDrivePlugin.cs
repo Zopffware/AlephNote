@@ -39,7 +39,7 @@ namespace AlephNote.Plugins.GoogleDrive {
         }
 
         public override INote CreateEmptyNote(IRemoteStorageConnection conn, IRemoteStorageConfiguration cfg) {
-            return new GoogleDriveNote();
+            return new GoogleDriveNote(Guid.NewGuid());
         }
 
         public override IRemoteStorageSyncPersistance CreateEmptyRemoteSyncData() {

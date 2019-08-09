@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace AlephNote.Plugins.GoogleDrive {
     public class GoogleDriveConfig : IRemoteStorageConfiguration {
-        //private const int ID_EXAMPLE
+        //private const int ID_EXAMPLE = [weird number];
 
         //public string Example = "this is an example";
         public XElement Serialize(AXMLSerializationSettings opt) {
@@ -63,7 +63,7 @@ namespace AlephNote.Plugins.GoogleDrive {
         }
 
         public string GetDisplayIdentifier() {
-            throw new NotImplementedException();
+            return "debug";
         }
     }
 }
