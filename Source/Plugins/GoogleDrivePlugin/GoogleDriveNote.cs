@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Xml.Linq;
 using AlephNote.PluginInterface;
 using AlephNote.PluginInterface.Datatypes;
@@ -7,43 +8,92 @@ using AlephNote.PluginInterface.Util;
 
 namespace AlephNote.Plugins.GoogleDrive {
     public class GoogleDriveNote : BasicHierachicalNote {
-        public override string Text { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private Guid _id;
+        public Guid ID { get { return _id; } set { _id = value; OnPropertyChanged(); } }
 
-        public override string Title { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _text = "";
+        public override string Text { get { return _text; } set { _text = value; OnPropertyChanged(); } }
 
-        public override DirectoryPath Path { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private string _title = "";
+        public override string Title { get { return _title; } set { _title = value; OnPropertyChanged(); } }
 
-        public override DateTimeOffset CreationDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private DirectoryPath _path = DirectoryPath.Root();
+        public override DirectoryPath Path { get { return _path; } set { _path = value; OnPropertyChanged(); } }
 
-        public override DateTimeOffset ModificationDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override TagList Tags => throw new NotImplementedException();
+        private DateTimeOffset _creationDate = DateTimeOffset.Now;
+        public override DateTimeOffset CreationDate { get { return _creationDate; } set { _creationDate = value; OnPropertyChanged(); } }
 
-        public override bool IsPinned { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private DateTimeOffset _modificationDate = DateTimeOffset.Now;
+        public override DateTimeOffset ModificationDate { get { return _modificationDate; } set { _modificationDate = value; OnPropertyChanged(); } }
 
-        public override bool IsLocked { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        private readonly VoidTagList _tags = new VoidTagList();
+        public override TagList Tags { get { return _tags; } }
 
-        //Constructor?
+        public override bool IsPinned { get { return false; } set { } }
 
-        public override string UniqueName => throw new NotImplementedException();
+        public override bool IsLocked { get { return false; } set { } }
+
+        public GoogleDriveNote(Guid uid) {
+            _id = uid;
+        }
+
+        public override string UniqueName => _id.ToString("B");
 
         public override XElement Serialize() {
-            throw new NotImplementedException();
+            var data = new object[]
+            {
+                new XElement("ID", _id.ToString("D")),
+                new XElement("Text", XHelper.ConvertToC80Base64(_text)),
+                new XElement("Title", Convert.ToBase64String(Encoding.UTF8.GetBytes(_title))),
+                new XElement("CreationDate", XHelper.ToString(_creationDate)),
+                new XElement("ModificationDate", XHelper.ToString(_modificationDate)),
+                new XElement("Path", Path.Serialize())
+            };
+
+            var r = new XElement("gdnote", data);
+            r.SetAttributeValue("plugin", GoogleDrivePlugin.Name);
+            r.SetAttributeValue("pluginversion", GoogleDrivePlugin.Version.ToString());
+
+            return r;
         }
 
         public override void Deserialize(XElement input) {
-            throw new NotImplementedException();
+            using (SuppressDirtyChanges()) {
+                _id = XHelper.GetChildValueGUID(input, "ID");
+                _title = XHelper.GetChildValueString(input, "Title");
+                _text = XHelper.GetChildBase64String(input, "Text");
+                _path = DirectoryPath.Deserialize(XHelper.GetChildrenOrEmpty(input, "Path", "PathComponent"));
+                _creationDate = XHelper.GetChildValueDateTimeOffset(input, "CreationDate");
+                _modificationDate = XHelper.GetChildValueDateTimeOffset(input, "ModificationDate");
+            }
         }
 
         protected override BasicNoteImpl CreateClone() {
-            throw new NotImplementedException();
+            var n = new GoogleDriveNote(_id);
+
+            using (n.SuppressDirtyChanges()) {
+                n._text             = _text;
+                n._title            = _title;
+                n._path             = _path;
+                n._creationDate     = _creationDate;
+                n._modificationDate = _modificationDate;
+                return n;
+            }
         }
 
         public override void OnAfterUpload(INote clonenote) {
             throw new NotImplementedException();
         }
 
-        public override void ApplyUpdatedData(INote other) {
-            throw new NotImplementedException();
+        public override void ApplyUpdatedData(INote iother) {
+            var other = (GoogleDriveNote)iother;
+
+            using (SuppressDirtyChanges()) {
+                _modificationDate = other.ModificationDate;
+                _text = other.Text;
+                _title = other.Title;
+                _path = other.Path;
+            }
         }
     }
 }
